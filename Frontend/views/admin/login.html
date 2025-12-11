@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Login - ReportSafe</title>
+    <link href="/css/style.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/x-icon" href="/images/shield-icon.svg" />
+    <style>
+      .login-container {
+        min-height: calc(100vh - 64px);
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+
+      .login-card {
+        background: white;
+        border-radius: 1.5rem;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+      }
+
+      .admin-icon {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+
+      .input-field {
+        transition: all 0.3s ease;
+      }
+
+      .input-field:focus {
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      }
+
+      .error-message {
+        animation: shake 0.5s ease-in-out;
+      }
+
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-5px);
+        }
+        75% {
+          transform: translateX(5px);
+        }
+      }
+
+      .security-indicator {
+        height: 4px;
+        background: #e5e7eb;
+        border-radius: 2px;
+        overflow: hidden;
+      }
+
+      .security-progress {
+        height: 100%;
+        width: 0%;
+        transition: width 0.3s ease;
+      }
+
+      .security-weak {
+        background: #ef4444;
+      }
+      .security-medium {
+        background: #f59e0b;
+      }
+      .security-strong {
+        background: #10b981;
+      }
+
+      .two-factor-code {
+        letter-spacing: 0.5em;
+        font-size: 1.5rem;
+        font-weight: bold;
+        text-align: center;
+        font-family: "Courier New", monospace;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md">
+      <div class="container mx-auto px-4">
+        <div class="flex justify-between items-center py-4">
+          <div class="flex items-center space-x-2">
+            <div class="bg-blue-600 p-2 rounded-lg">
+              <svg
+                class="w-8 h-8 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                ></path>
+              </svg>
+            </div>
+            <div>
+              <h1 class="text-xl font-bold text-gray-800">ReportSafe</h1>
+              <p class="text-xs text-gray-500">Admin Portal</p>
+            </div>
+          </div>
+          <a
+            href="../user/index.html"
+            class="text-blue-600 hover:text-blue-800 font-medium"
+          >
+            ← Return to Public Site
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="login-container">
+      <div class="container mx-auto px-4 py-12">
+        <div class="max-w-md mx-auto">
+          <!-- Login Card -->
+          <div class="login-card">
+            <!-- Header -->
+            <div class="p-8 text-center border-b">
+              <div
+                class="admin-icon w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6"
+              >
+                <svg
+                  class="w-10 h-10"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                  ></path>
+                </svg>
+              </div>
+              <h1 class="text-2xl font-bold text-gray-900 mb-2">Admin Login</h1>
+              <p class="text-gray-600">
+                Secure access to ReportSafe administration panel
+              </p>
+            </div>
+
+            <!-- Login Form -->
+            <div class="p-8">
+              <!-- Error Message -->
+              <div
+                id="errorMessage"
+                class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 error-message"
+              >
+                <div class="flex items-center">
+                  <svg
+                    class="w-5 h-5 mr-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.998-.833-2.732 0L4.346 16.5c-.77.833.192 2.5 1.732 2.5z"
+                    ></path>
+                  </svg>
+                  <span id="errorText">Invalid credentials</span>
+                </div>
+              </div>
+
+              <!-- Step 1: Basic Login -->
+              <form id="loginForm" class="space-y-6">
+                <div>
+                  <label
+                    for="username"
+                    class="block text-gray-700 mb-2 font-medium"
+                    >Username</label
+                  >
+                  <input
+                    type="text"
+                    id="username"
+                    class="input-field w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                    placeholder="Enter admin username"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label
+                    for="password"
+                    class="block text-gray-700 mb-2 font-medium"
+                    >Password</label
+                  >
+                  <div class="relative">
+                    <input
+                      type="password"
+                      id="password"
+                      class="input-field w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition pr-12"
+                      placeholder="Enter password"
+                      required
+                    />
+                    <button
+                      type="button"
+                      id="togglePassword"
+                      class="absolute right-3 top-3 text-gray-500 hover:text-gray-700"
+                    >
+                      <svg
+                        class="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                        ></path>
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                        ></path>
+                      </svg>
+                    </button>
+                  </div>
+
+                  <!-- Password Strength -->
+                  <div class="mt-2">
+                    <div class="security-indicator">
+                      <div
+                        id="securityProgress"
+                        class="security-progress"
+                      ></div>
+                    </div>
+                    <p id="securityText" class="text-xs text-gray-500 mt-1"></p>
+                  </div>
+                </div>
+
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center">
+                    <input
+                      type="checkbox"
+                      id="rememberMe"
+                      class="h-4 w-4 text-blue-600 rounded border-gray-300"
+                    />
+                    <label for="rememberMe" class="ml-2 text-gray-700"
+                      >Remember me</label
+                    >
+                  </div>
+                  <a
+                    href="#"
+                    class="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                    >Forgot password?</a
+                  >
+                </div>
+
+                <button
+                  type="submit"
+                  id="loginButton"
+                  class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200 shadow-md hover:shadow-lg"
+                >
+                  <span id="buttonText"
+                    >Continue to Two-Factor Authentication</span
+                  >
+                  <svg
+                    id="loadingSpinner"
+                    class="hidden animate-spin ml-2 h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      class="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      stroke-width="4"
+                    ></circle>
+                    <path
+                      class="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                </button>
+              </form>
+
+              <!-- Step 2: Two-Factor Authentication -->
+              <div id="twoFactorSection" class="hidden space-y-6">
+                <div class="text-center mb-6">
+                  <div
+                    class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4"
+                  >
+                    <svg
+                      class="w-8 h-8 text-blue-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                      ></path>
+                    </svg>
+                  </div>
+                  <h3 class="text-lg font-bold text-gray-900 mb-2">
+                    Two-Factor Authentication
+                  </h3>
+                  <p class="text-gray-600">
+                    Enter the 6-digit code from your authenticator app
+                  </p>
+                </div>
+
+                <div>
+                  <label class="block text-gray-700 mb-2 font-medium"
+                    >Verification Code</label
+                  >
+                  <div class="flex justify-center space-x-2">
+                    <input
+                      type="text"
+                      maxlength="1"
+                      class="two-factor-code w-12 h-12 border-2 border-gray-300 rounded-lg text-center text-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
+                      oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value) this.nextElementSibling?.focus()"
+                    />
+                    <input
+                      type="text"
+                      maxlength="1"
+                      class="two-factor-code w-12 h-12 border-2 border-gray-300 rounded-lg text-center text-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
+                      oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value) this.nextElementSibling?.focus()"
+                    />
+                    <input
+                      type="text"
+                      maxlength="1"
+                      class="two-factor-code w-12 h-12 border-2 border-gray-300 rounded-lg text-center text-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
+                      oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value) this.nextElementSibling?.focus()"
+                    />
+                    <span class="text-gray-400 text-xl font-bold self-center"
+                      >-</span
+                    >
+                    <input
+                      type="text"
+                      maxlength="1"
+                      class="two-factor-code w-12 h-12 border-2 border-gray-300 rounded-lg text-center text-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
+                      oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value) this.nextElementSibling?.focus()"
+                    />
+                    <input
+                      type="text"
+                      maxlength="1"
+                      class="two-factor-code w-12 h-12 border-2 border-gray-300 rounded-lg text-center text-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
+                      oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value) this.nextElementSibling?.focus()"
+                    />
+                    <input
+                      type="text"
+                      maxlength="1"
+                      class="two-factor-code w-12 h-12 border-2 border-gray-300 rounded-lg text-center text-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
+                      oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                    />
+                  </div>
+                </div>
+
+                <div class="flex items-center justify-between text-sm">
+                  <button
+                    type="button"
+                    id="backToLogin"
+                    class="text-blue-600 hover:text-blue-800 font-medium"
+                  >
+                    ← Back to login
+                  </button>
+                  <button
+                    type="button"
+                    id="resendCode"
+                    class="text-blue-600 hover:text-blue-800 font-medium"
+                  >
+                    Resend code
+                  </button>
+                </div>
+
+                <button
+                  type="button"
+                  id="verifyButton"
+                  class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200 shadow-md hover:shadow-lg"
+                >
+                  Verify & Sign In
+                </button>
+              </div>
+
+              <!-- Security Notice -->
+              <div class="mt-8 pt-6 border-t border-gray-200">
+                <div class="flex items-start">
+                  <svg
+                    class="w-5 h-5 text-blue-600 mr-2 flex-shrink-0"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                    ></path>
+                  </svg>
+                  <p class="text-sm text-gray-600">
+                    <strong>Security Notice:</strong> This portal is protected
+                    by end-to-end encryption and two-factor authentication. All
+                    access is logged and monitored.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Support Information -->
+          <div class="text-center mt-8">
+            <p class="text-white text-sm">
+              Need help? Contact
+              <a
+                href="mailto:admin-support@reportsafe.org"
+                class="font-medium underline"
+                >admin-support@reportsafe.org</a
+              >
+            </p>
+            <p class="text-white/80 text-xs mt-2">
+              Version 2.4.1 • Last updated: March 18, 2024
+            </p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- JavaScript -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // DOM Elements
+        const loginForm = document.getElementById("loginForm");
+        const twoFactorSection = document.getElementById("twoFactorSection");
+        const errorMessage = document.getElementById("errorMessage");
+        const errorText = document.getElementById("errorText");
+        const loginButton = document.getElementById("loginButton");
+        const buttonText = document.getElementById("buttonText");
+        const loadingSpinner = document.getElementById("loadingSpinner");
+        const togglePassword = document.getElementById("togglePassword");
+        const passwordInput = document.getElementById("password");
+        const securityProgress = document.getElementById("securityProgress");
+        const securityText = document.getElementById("securityText");
+        const verifyButton = document.getElementById("verifyButton");
+        const backToLogin = document.getElementById("backToLogin");
+        const resendCode = document.getElementById("resendCode");
+        const codeInputs = document.querySelectorAll(".two-factor-code");
+
+        // Toggle password visibility
+        togglePassword.addEventListener("click", function () {
+          const type =
+            passwordInput.getAttribute("type") === "password"
+              ? "text"
+              : "password";
+          passwordInput.setAttribute("type", type);
+
+          this.innerHTML =
+            type === "password"
+              ? `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                    </svg>`
+              : `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L6.59 6.59m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path>
+                    </svg>`;
+        });
+
+        // Password strength checker
+        passwordInput.addEventListener("input", function () {
+          const password = this.value;
+          let strength = 0;
+          let text = "";
+          let color = "";
+
+          // Check password strength
+          if (password.length >= 8) strength++;
+          if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
+          if (password.match(/\d/)) strength++;
+          if (password.match(/[^a-zA-Z\d]/)) strength++;
+
+          // Update UI
+          const width = strength * 25;
+          securityProgress.style.width = width + "%";
+
+          if (strength === 0) {
+            text = "Enter password";
+            color = "security-weak";
+          } else if (strength <= 2) {
+            text = "Weak";
+            color = "security-weak";
+          } else if (strength === 3) {
+            text = "Medium";
+            color = "security-medium";
+          } else {
+            text = "Strong";
+            color = "security-strong";
+          }
+
+          securityProgress.className = `security-progress ${color}`;
+          securityText.textContent = text;
+        });
+
+        // Login form submission
+        loginForm.addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const username = document.getElementById("username").value;
+          const password = document.getElementById("password").value;
+
+          // Hide any previous errors
+          errorMessage.classList.add("hidden");
+
+          // Show loading state
+          buttonText.textContent = "Verifying credentials...";
+          loadingSpinner.classList.remove("hidden");
+          loginButton.disabled = true;
+
+          // Simulate API call
+          setTimeout(() => {
+            // Demo credentials for testing
+            const validUsername = "admin";
+            const validPassword = "SecureAdmin2024!";
+
+            if (username === validUsername && password === validPassword) {
+              // Show 2FA section
+              loginForm.classList.add("hidden");
+              twoFactorSection.classList.remove("hidden");
+              autoFocusCodeInputs();
+            } else {
+              // Show error
+              errorText.textContent =
+                "Invalid username or password. Please try again.";
+              errorMessage.classList.remove("hidden");
+
+              // Shake animation
+              errorMessage.style.animation = "none";
+              setTimeout(() => {
+                errorMessage.style.animation = "shake 0.5s ease-in-out";
+              }, 10);
+            }
+
+            // Reset button
+            buttonText.textContent = "Continue to Two-Factor Authentication";
+            loadingSpinner.classList.add("hidden");
+            loginButton.disabled = false;
+          }, 1500);
+        });
+
+        // Auto-focus first code input
+        function autoFocusCodeInputs() {
+          if (codeInputs.length > 0) {
+            codeInputs[0].focus();
+          }
+        }
+
+        // Handle code input navigation
+        codeInputs.forEach((input, index) => {
+          input.addEventListener("keydown", function (e) {
+            // Handle backspace
+            if (e.key === "Backspace" && !this.value && index > 0) {
+              codeInputs[index - 1].focus();
+              codeInputs[index - 1].value = "";
+            }
+
+            // Handle left arrow
+            if (e.key === "ArrowLeft" && index > 0) {
+              codeInputs[index - 1].focus();
+            }
+
+            // Handle right arrow or tab
+            if (
+              (e.key === "ArrowRight" || e.key === "Tab") &&
+              index < codeInputs.length - 1
+            ) {
+              e.preventDefault();
+              codeInputs[index + 1].focus();
+            }
+          });
+
+          input.addEventListener("paste", function (e) {
+            e.preventDefault();
+            const paste = e.clipboardData
+              .getData("text")
+              .replace(/[^0-9]/g, "");
+
+            // Fill inputs with pasted code
+            codeInputs.forEach((inputEl, idx) => {
+              if (idx < paste.length) {
+                inputEl.value = paste[idx];
+              }
+            });
+
+            // Focus next empty input or last one
+            const nextEmpty = Array.from(codeInputs).findIndex(
+              (el) => !el.value
+            );
+            if (nextEmpty !== -1) {
+              codeInputs[nextEmpty].focus();
+            } else {
+              codeInputs[codeInputs.length - 1].focus();
+            }
+          });
+        });
+
+        // Verify 2FA code
+        verifyButton.addEventListener("click", function () {
+          // Get complete code
+          const code = Array.from(codeInputs)
+            .map((input) => input.value)
+            .join("");
+
+          if (code.length !== 6) {
+            errorText.textContent = "Please enter the complete 6-digit code";
+            errorMessage.classList.remove("hidden");
+            return;
+          }
+
+          // Demo verification (123456 is the demo code)
+          if (code === "123456") {
+            // Success - redirect to dashboard
+            this.innerHTML = `
+                        <svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Signing in...
+                    `;
+            this.disabled = true;
+
+            setTimeout(() => {
+              window.location.href = "/admin/dashboard.html";
+            }, 2000);
+          } else {
+            errorText.textContent =
+              "Invalid verification code. Please try again.";
+            errorMessage.classList.remove("hidden");
+
+            // Clear inputs and refocus first
+            codeInputs.forEach((input) => (input.value = ""));
+            autoFocusCodeInputs();
+          }
+        });
+
+        // Back to login
+        backToLogin.addEventListener("click", function () {
+          twoFactorSection.classList.add("hidden");
+          loginForm.classList.remove("hidden");
+        });
+
+        // Resend code
+        resendCode.addEventListener("click", function () {
+          this.innerHTML = `
+                    <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-blue-600 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Sending...
+                `;
+          this.disabled = true;
+
+          setTimeout(() => {
+            this.innerHTML = "Resend code";
+            this.disabled = false;
+
+            // Show success message
+            errorText.textContent =
+              "New verification code sent to your authenticator app";
+            errorMessage.classList.remove("hidden");
+            errorMessage.classList.remove(
+              "bg-red-50",
+              "border-red-200",
+              "text-red-700"
+            );
+            errorMessage.classList.add(
+              "bg-green-50",
+              "border-green-200",
+              "text-green-700"
+            );
+
+            setTimeout(() => {
+              errorMessage.classList.add("hidden");
+              errorMessage.classList.remove(
+                "bg-green-50",
+                "border-green-200",
+                "text-green-700"
+              );
+              errorMessage.classList.add(
+                "bg-red-50",
+                "border-red-200",
+                "text-red-700"
+              );
+            }, 3000);
+          }, 1500);
+        });
+
+        // Auto-focus username field
+        document.getElementById("username").focus();
+      });
+    </script>
+  </body>
+</html>

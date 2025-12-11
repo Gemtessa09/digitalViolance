@@ -1,0 +1,1465 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Response Center - ReportSafe Admin</title>
+    <link href="/css/style.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/x-icon" href="/images/shield-icon.svg" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      .response-container {
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      }
+
+      .case-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 1rem 1rem 0 0;
+      }
+
+      .response-tabs {
+        display: flex;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      .response-tab {
+        padding: 1rem 1.5rem;
+        cursor: pointer;
+        border-bottom: 3px solid transparent;
+        transition: all 0.2s ease;
+      }
+
+      .response-tab.active {
+        border-bottom-color: #3b82f6;
+        color: #3b82f6;
+        font-weight: 600;
+      }
+
+      .response-tab:hover:not(.active) {
+        background: #f8fafc;
+      }
+
+      .template-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .template-card:hover {
+        border-color: #3b82f6;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+      }
+
+      .template-card.selected {
+        border-color: #3b82f6;
+        background: #eff6ff;
+      }
+
+      .message-bubble {
+        max-width: 70%;
+        padding: 1rem;
+        border-radius: 1rem;
+        margin-bottom: 1rem;
+        position: relative;
+      }
+
+      .message-bubble.admin {
+        background: #3b82f6;
+        color: white;
+        margin-left: auto;
+        border-bottom-right-radius: 0.25rem;
+      }
+
+      .message-bubble.user {
+        background: #f3f4f6;
+        color: #1f2937;
+        margin-right: auto;
+        border-bottom-left-radius: 0.25rem;
+      }
+
+      .message-time {
+        font-size: 0.75rem;
+        opacity: 0.7;
+        margin-top: 0.25rem;
+      }
+
+      .status-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .status-pending {
+        background: #fef3c7;
+        color: #92400e;
+      }
+      .status-review {
+        background: #dbeafe;
+        color: #1e40af;
+      }
+      .status-action {
+        background: #fce7f3;
+        color: #831843;
+      }
+      .status-resolved {
+        background: #d1fae5;
+        color: #065f46;
+      }
+
+      .action-button {
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .action-button.primary {
+        background: #3b82f6;
+        color: white;
+      }
+
+      .action-button.primary:hover {
+        background: #2563eb;
+      }
+
+      .action-button.secondary {
+        background: #f3f4f6;
+        color: #374151;
+      }
+
+      .action-button.secondary:hover {
+        background: #e5e7eb;
+      }
+
+      .action-button.danger {
+        background: #ef4444;
+        color: white;
+      }
+
+      .action-button.danger:hover {
+        background: #dc2626;
+      }
+
+      .escalation-level {
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+        margin-bottom: 0.5rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .escalation-level:hover {
+        transform: translateX(5px);
+      }
+
+      .escalation-level.low {
+        background: #dbeafe;
+        border-left: 4px solid #3b82f6;
+      }
+      .escalation-level.medium {
+        background: #fef3c7;
+        border-left: 4px solid #f59e0b;
+      }
+      .escalation-level.high {
+        background: #fee2e2;
+        border-left: 4px solid #ef4444;
+      }
+      .escalation-level.critical {
+        background: #fce7f3;
+        border-left: 4px solid #be185d;
+      }
+
+      .timeline-step {
+        position: relative;
+        padding-left: 2rem;
+        margin-bottom: 2rem;
+      }
+
+      .timeline-step:before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1.5rem;
+        height: 1.5rem;
+        border-radius: 50%;
+        border: 3px solid #3b82f6;
+        background: white;
+      }
+
+      .timeline-step.complete:before {
+        background: #3b82f6;
+        border-color: #3b82f6;
+      }
+
+      .timeline-step.current:before {
+        background: white;
+        border-color: #3b82f6;
+        animation: pulse 2s infinite;
+      }
+
+      .timeline-step:after {
+        content: "";
+        position: absolute;
+        left: 0.75rem;
+        top: 1.5rem;
+        bottom: -2rem;
+        width: 2px;
+        background: #d1d5db;
+      }
+
+      .timeline-step:last-child:after {
+        display: none;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+        }
+        50% {
+          box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+        }
+      }
+
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+      }
+
+      .modal-overlay.show {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal-content {
+        background: white;
+        border-radius: 1rem;
+        max-width: 500px;
+        width: 90%;
+        animation: modalSlide 0.3s ease;
+      }
+
+      @keyframes modalSlide {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50">
+    <!-- Admin Layout -->
+    <div class="flex h-screen">
+      <!-- Sidebar -->
+      <aside class="sidebar bg-gray-900 text-white w-64 flex-shrink-0">
+        <!-- Logo -->
+        <div class="p-6 border-b border-gray-800">
+          <div class="flex items-center space-x-3">
+            <div class="bg-blue-600 p-2 rounded-lg">
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                ></path>
+              </svg>
+            </div>
+            <div>
+              <h1 class="text-xl font-bold">ReportSafe</h1>
+              <p class="text-xs text-gray-400">Response Center</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="p-4">
+          <div class="space-y-1">
+            <a
+              href="dashboard.html"
+              class="flex items-center space-x-3 px-4 py-3 text-gray-300 hover:bg-gray-800 rounded-lg transition"
+            >
+              <i class="fas fa-tachometer-alt w-5 h-5"></i>
+              <span>Dashboard</span>
+            </a>
+
+            <a
+              href="reports.html"
+              class="flex items-center space-x-3 px-4 py-3 text-gray-300 hover:bg-gray-800 rounded-lg transition"
+            >
+              <i class="fas fa-file-alt w-5 h-5"></i>
+              <span>All Reports</span>
+            </a>
+
+            <a
+              href="view-report.html"
+              class="flex items-center space-x-3 px-4 py-3 text-gray-300 hover:bg-gray-800 rounded-lg transition"
+            >
+              <i class="fas fa-eye w-5 h-5"></i>
+              <span>Evidence Viewer</span>
+            </a>
+
+            <a
+              href="respond.html"
+              class="flex items-center space-x-3 px-4 py-3 bg-blue-600/20 text-blue-300 rounded-lg"
+            >
+              <i class="fas fa-reply w-5 h-5"></i>
+              <span>Response Center</span>
+            </a>
+          </div>
+        </nav>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="flex-1 overflow-auto">
+        <!-- Top Bar -->
+        <header class="bg-white shadow-sm border-b px-6 py-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <h1 class="text-2xl font-bold text-gray-900">Response Center</h1>
+              <p class="text-gray-600">
+                Manage communications and case resolution
+              </p>
+            </div>
+
+            <div class="flex items-center space-x-4">
+              <div class="relative">
+                <select
+                  class="pl-4 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition appearance-none"
+                >
+                  <option>All Cases</option>
+                  <option selected>Requiring Response (6)</option>
+                  <option>Awaiting Reply</option>
+                  <option>Recently Closed</option>
+                </select>
+                <i
+                  class="fas fa-chevron-down absolute right-3 top-3 text-gray-500"
+                ></i>
+              </div>
+
+              <button
+                class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-6 rounded-lg transition duration-200"
+              >
+                <i class="fas fa-plus mr-2"></i>
+                New Response
+              </button>
+            </div>
+          </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="p-6">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Left Column: Case List -->
+            <div class="lg:col-span-1">
+              <!-- Cases Requiring Response -->
+              <div class="response-container mb-6">
+                <div class="p-6 border-b">
+                  <h2 class="text-xl font-bold text-gray-900">
+                    Cases Requiring Response
+                  </h2>
+                  <p class="text-sm text-gray-600 mt-1">
+                    6 cases need your attention
+                  </p>
+                </div>
+
+                <div
+                  class="divide-y divide-gray-200 max-h-[600px] overflow-y-auto"
+                >
+                  <!-- Case 1 -->
+                  <div
+                    class="p-4 hover:bg-gray-50 cursor-pointer border-l-4 border-red-500"
+                  >
+                    <div class="flex justify-between items-start mb-2">
+                      <div>
+                        <h3 class="font-bold text-gray-900">RS-2024-ABC123</h3>
+                        <p class="text-sm text-gray-600">
+                          Harassment & Threats
+                        </p>
+                      </div>
+                      <span class="status-badge status-action">Action</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">
+                      Last message: 2 hours ago
+                    </p>
+                    <div class="flex justify-between items-center">
+                      <span class="text-xs text-gray-500">High Priority</span>
+                      <button class="action-button primary text-xs">
+                        Respond
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Case 2 -->
+                  <div
+                    class="p-4 hover:bg-gray-50 cursor-pointer border-l-4 border-yellow-500"
+                  >
+                    <div class="flex justify-between items-start mb-2">
+                      <div>
+                        <h3 class="font-bold text-gray-900">RS-2024-XYZ789</h3>
+                        <p class="text-sm text-gray-600">Image Abuse</p>
+                      </div>
+                      <span class="status-badge status-review">Review</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">
+                      Awaiting evidence review
+                    </p>
+                    <div class="flex justify-between items-center">
+                      <span class="text-xs text-gray-500">Medium Priority</span>
+                      <button class="action-button secondary text-xs">
+                        Review
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Case 3 -->
+                  <div
+                    class="p-4 hover:bg-gray-50 cursor-pointer border-l-4 border-red-500"
+                  >
+                    <div class="flex justify-between items-start mb-2">
+                      <div>
+                        <h3 class="font-bold text-gray-900">RS-2024-DEF456</h3>
+                        <p class="text-sm text-gray-600">Threats</p>
+                      </div>
+                      <span class="status-badge status-action">Action</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">
+                      Legal escalation required
+                    </p>
+                    <div class="flex justify-between items-center">
+                      <span class="text-xs text-gray-500">High Priority</span>
+                      <button class="action-button danger text-xs">
+                        Escalate
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Case 4 -->
+                  <div
+                    class="p-4 hover:bg-gray-50 cursor-pointer border-l-4 border-blue-500"
+                  >
+                    <div class="flex justify-between items-start mb-2">
+                      <div>
+                        <h3 class="font-bold text-gray-900">RS-2024-GHI789</h3>
+                        <p class="text-sm text-gray-600">Cyberstalking</p>
+                      </div>
+                      <span class="status-badge status-pending">Pending</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">
+                      New evidence submitted
+                    </p>
+                    <div class="flex justify-between items-center">
+                      <span class="text-xs text-gray-500">Low Priority</span>
+                      <button class="action-button secondary text-xs">
+                        View
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Case 5 -->
+                  <div
+                    class="p-4 hover:bg-gray-50 cursor-pointer border-l-4 border-yellow-500"
+                  >
+                    <div class="flex justify-between items-start mb-2">
+                      <div>
+                        <h3 class="font-bold text-gray-900">RS-2024-JKL012</h3>
+                        <p class="text-sm text-gray-600">Doxxing</p>
+                      </div>
+                      <span class="status-badge status-resolved">Resolved</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">Follow-up required</p>
+                    <div class="flex justify-between items-center">
+                      <span class="text-xs text-gray-500">Medium Priority</span>
+                      <button class="action-button secondary text-xs">
+                        Follow Up
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Response Templates -->
+              <div class="response-container">
+                <div class="p-6 border-b">
+                  <h2 class="text-xl font-bold text-gray-900">
+                    Response Templates
+                  </h2>
+                  <p class="text-sm text-gray-600 mt-1">
+                    Quick responses for common scenarios
+                  </p>
+                </div>
+
+                <div class="p-6 space-y-4">
+                  <div class="template-card" onclick="selectTemplate(1)">
+                    <h4 class="font-bold text-gray-900">
+                      Initial Acknowledgement
+                    </h4>
+                    <p class="text-sm text-gray-600 mt-1">
+                      Thank you for your report. We're reviewing it...
+                    </p>
+                  </div>
+
+                  <div class="template-card" onclick="selectTemplate(2)">
+                    <h4 class="font-bold text-gray-900">Evidence Request</h4>
+                    <p class="text-sm text-gray-600 mt-1">
+                      To proceed, we need additional evidence...
+                    </p>
+                  </div>
+
+                  <div class="template-card" onclick="selectTemplate(3)">
+                    <h4 class="font-bold text-gray-900">Case Update</h4>
+                    <p class="text-sm text-gray-600 mt-1">
+                      We've made progress on your case...
+                    </p>
+                  </div>
+
+                  <div class="template-card" onclick="selectTemplate(4)">
+                    <h4 class="font-bold text-gray-900">Legal Escalation</h4>
+                    <p class="text-sm text-gray-600 mt-1">
+                      Your case has been escalated to legal...
+                    </p>
+                  </div>
+
+                  <div class="template-card" onclick="selectTemplate(5)">
+                    <h4 class="font-bold text-gray-900">Case Resolution</h4>
+                    <p class="text-sm text-gray-600 mt-1">
+                      We've completed our investigation...
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column: Response Interface -->
+            <div class="lg:col-span-2">
+              <!-- Case Header -->
+              <div class="case-header">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <h2 class="text-2xl font-bold">RS-2024-ABC123</h2>
+                    <p class="opacity-90">Harassment & Threats Case</p>
+                  </div>
+                  <div class="text-right">
+                    <div
+                      class="inline-block bg-white/20 px-3 py-1 rounded-full text-sm mb-2"
+                    >
+                      <i class="fas fa-exclamation-triangle mr-1"></i>
+                      High Priority
+                    </div>
+                    <p class="text-sm opacity-90">
+                      Assigned to: Officer Jane Smith
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Response Tabs -->
+              <div class="response-tabs">
+                <div class="response-tab active" data-tab="communication">
+                  <i class="fas fa-comments mr-2"></i>
+                  Communication
+                </div>
+                <div class="response-tab" data-tab="escalation">
+                  <i class="fas fa-level-up-alt mr-2"></i>
+                  Escalation
+                </div>
+                <div class="response-tab" data-tab="resolution">
+                  <i class="fas fa-check-circle mr-2"></i>
+                  Resolution
+                </div>
+                <div class="response-tab" data-tab="history">
+                  <i class="fas fa-history mr-2"></i>
+                  History
+                </div>
+              </div>
+
+              <!-- Tab Content -->
+              <div class="response-container">
+                <!-- Communication Tab -->
+                <div class="p-6 tab-content" id="communicationTab">
+                  <!-- Conversation Thread -->
+                  <div class="mb-6">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4">
+                      Conversation Thread
+                    </h3>
+
+                    <div
+                      class="space-y-4 max-h-[400px] overflow-y-auto p-4 border rounded-lg"
+                    >
+                      <!-- Message 1 (User) -->
+                      <div class="message-bubble user">
+                        <p>
+                          I've been receiving threatening messages on Instagram
+                          for the past week. The person is making threats to
+                          share my personal information.
+                        </p>
+                        <div class="message-time">March 15, 2024 14:30</div>
+                      </div>
+
+                      <!-- Message 2 (Admin) -->
+                      <div class="message-bubble admin">
+                        <p>
+                          Thank you for reporting this to us. We take these
+                          matters very seriously. Our team is reviewing your
+                          evidence and will get back to you within 24 hours.
+                        </p>
+                        <div class="message-time">March 15, 2024 15:15</div>
+                      </div>
+
+                      <!-- Message 3 (User) -->
+                      <div class="message-bubble user">
+                        <p>
+                          The threats have escalated today. They've now sent me
+                          a screenshot of my home address. I'm very concerned
+                          for my safety.
+                        </p>
+                        <div class="message-time">March 16, 2024 09:42</div>
+                      </div>
+
+                      <!-- Message 4 (Admin) -->
+                      <div class="message-bubble admin">
+                        <p>
+                          We've reviewed your additional evidence and are
+                          escalating this case to our legal team immediately.
+                          Please ensure your physical safety and contact local
+                          authorities if you feel threatened.
+                        </p>
+                        <div class="message-time">March 16, 2024 11:30</div>
+                      </div>
+
+                      <!-- Message 5 (User) -->
+                      <div class="message-bubble user">
+                        <p>
+                          Thank you. I've filed a police report. Please keep me
+                          updated on your investigation.
+                        </p>
+                        <div class="message-time">March 17, 2024 10:15</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Response Form -->
+                  <div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-4">
+                      Send Response
+                    </h3>
+
+                    <div class="space-y-4">
+                      <div>
+                        <label class="block text-gray-700 mb-2 font-medium"
+                          >Response Type</label
+                        >
+                        <select
+                          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                        >
+                          <option>Case Update</option>
+                          <option>Request Additional Information</option>
+                          <option>Escalation Notification</option>
+                          <option>Resolution Update</option>
+                          <option>Safety Advisory</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label class="block text-gray-700 mb-2 font-medium"
+                          >Message</label
+                        >
+                        <textarea
+                          id="responseMessage"
+                          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition min-h-[150px]"
+                          placeholder="Type your response here..."
+                        >
+Our legal team has reviewed your case and determined that there is sufficient evidence to proceed. We will be contacting Instagram to request removal of the content and preservation of evidence. We recommend you continue to document any further incidents.</textarea
+                        >
+                      </div>
+
+                      <div>
+                        <label class="block text-gray-700 mb-2 font-medium"
+                          >Attachments (Optional)</label
+                        >
+                        <div
+                          class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center"
+                        >
+                          <i
+                            class="fas fa-cloud-upload-alt text-3xl text-gray-400 mb-2"
+                          ></i>
+                          <p class="text-gray-600">
+                            Drag & drop files or
+                            <button
+                              class="text-blue-600 hover:text-blue-800 font-medium"
+                            >
+                              browse
+                            </button>
+                          </p>
+                          <p class="text-sm text-gray-500 mt-1">
+                            Maximum file size: 25MB
+                          </p>
+                        </div>
+                      </div>
+
+                      <div class="flex items-center space-x-4">
+                        <div class="flex items-center">
+                          <input
+                            type="checkbox"
+                            id="sendEmail"
+                            class="h-4 w-4 text-blue-600 rounded border-gray-300"
+                            checked
+                          />
+                          <label for="sendEmail" class="ml-2 text-gray-700"
+                            >Send email notification</label
+                          >
+                        </div>
+                        <div class="flex items-center">
+                          <input
+                            type="checkbox"
+                            id="updateStatus"
+                            class="h-4 w-4 text-blue-600 rounded border-gray-300"
+                            checked
+                          />
+                          <label for="updateStatus" class="ml-2 text-gray-700"
+                            >Update case status</label
+                          >
+                        </div>
+                      </div>
+
+                      <div class="flex justify-end space-x-4">
+                        <button class="action-button secondary">
+                          Save as Draft
+                        </button>
+                        <button
+                          class="action-button primary"
+                          onclick="sendResponse()"
+                        >
+                          <i class="fas fa-paper-plane mr-2"></i>
+                          Send Response
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Escalation Tab -->
+                <div class="p-6 tab-content hidden" id="escalationTab">
+                  <h3 class="text-lg font-bold text-gray-900 mb-6">
+                    Case Escalation
+                  </h3>
+
+                  <div class="space-y-6">
+                    <!-- Current Status -->
+                    <div
+                      class="bg-blue-50 p-4 rounded-lg border border-blue-200"
+                    >
+                      <div class="flex items-center justify-between">
+                        <div>
+                          <h4 class="font-bold text-gray-900">
+                            Current Escalation Level
+                          </h4>
+                          <p class="text-sm text-gray-600">
+                            Level 3 - Legal Team Review
+                          </p>
+                        </div>
+                        <span class="status-badge status-action"
+                          >Escalated</span
+                        >
+                      </div>
+                    </div>
+
+                    <!-- Escalation Options -->
+                    <div>
+                      <h4 class="font-bold text-gray-900 mb-4">
+                        Escalation Options
+                      </h4>
+
+                      <div class="space-y-3">
+                        <div
+                          class="escalation-level low"
+                          onclick="selectEscalation('low')"
+                        >
+                          <div class="flex justify-between items-center">
+                            <div>
+                              <h5 class="font-bold">
+                                Level 1 - Standard Review
+                              </h5>
+                              <p class="text-sm text-gray-600">
+                                Internal review by case officer
+                              </p>
+                            </div>
+                            <i class="fas fa-check text-blue-600"></i>
+                          </div>
+                        </div>
+
+                        <div
+                          class="escalation-level medium"
+                          onclick="selectEscalation('medium')"
+                        >
+                          <div class="flex justify-between items-center">
+                            <div>
+                              <h5 class="font-bold">
+                                Level 2 - Specialist Review
+                              </h5>
+                              <p class="text-sm text-gray-600">
+                                Review by senior specialist or team lead
+                              </p>
+                            </div>
+                            <i class="fas fa-check text-yellow-600"></i>
+                          </div>
+                        </div>
+
+                        <div
+                          class="escalation-level high"
+                          onclick="selectEscalation('high')"
+                        >
+                          <div class="flex justify-between items-center">
+                            <div>
+                              <h5 class="font-bold">Level 3 - Legal Team</h5>
+                              <p class="text-sm text-gray-600">
+                                Escalation to internal legal department
+                              </p>
+                            </div>
+                            <i class="fas fa-check text-red-600"></i>
+                          </div>
+                        </div>
+
+                        <div
+                          class="escalation-level critical"
+                          onclick="selectEscalation('critical')"
+                        >
+                          <div class="flex justify-between items-center">
+                            <div>
+                              <h5 class="font-bold">
+                                Level 4 - Law Enforcement
+                              </h5>
+                              <p class="text-sm text-gray-600">
+                                Immediate referral to law enforcement
+                              </p>
+                            </div>
+                            <i class="fas fa-arrow-right text-pink-600"></i>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Escalation Form -->
+                    <div>
+                      <h4 class="font-bold text-gray-900 mb-4">
+                        Escalation Details
+                      </h4>
+
+                      <div class="space-y-4">
+                        <div>
+                          <label class="block text-gray-700 mb-2 font-medium"
+                            >Reason for Escalation</label
+                          >
+                          <textarea
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition min-h-[100px]"
+                            placeholder="Explain why this case requires escalation..."
+                          >
+Clear and credible threats to physical safety. Evidence includes doxxing of home address. Requires immediate legal intervention.</textarea
+                          >
+                        </div>
+
+                        <div>
+                          <label class="block text-gray-700 mb-2 font-medium"
+                            >Assigned To</label
+                          >
+                          <select
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                          >
+                            <option>Legal Team - Department A</option>
+                            <option>Legal Team - Department B</option>
+                            <option>Senior Investigator</option>
+                            <option>External Counsel</option>
+                          </select>
+                        </div>
+
+                        <div class="flex justify-end">
+                          <button
+                            class="action-button danger"
+                            onclick="confirmEscalation()"
+                          >
+                            <i class="fas fa-level-up-alt mr-2"></i>
+                            Confirm Escalation
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Resolution Tab -->
+                <div class="p-6 tab-content hidden" id="resolutionTab">
+                  <h3 class="text-lg font-bold text-gray-900 mb-6">
+                    Case Resolution
+                  </h3>
+
+                  <div class="space-y-6">
+                    <!-- Resolution Timeline -->
+                    <div>
+                      <h4 class="font-bold text-gray-900 mb-4">
+                        Resolution Progress
+                      </h4>
+
+                      <div class="space-y-2">
+                        <div class="timeline-step complete">
+                          <div class="ml-6">
+                            <p class="font-medium">Report Submitted</p>
+                            <p class="text-sm text-gray-600">March 15, 2024</p>
+                          </div>
+                        </div>
+
+                        <div class="timeline-step complete">
+                          <div class="ml-6">
+                            <p class="font-medium">Evidence Reviewed</p>
+                            <p class="text-sm text-gray-600">March 16, 2024</p>
+                          </div>
+                        </div>
+
+                        <div class="timeline-step complete">
+                          <div class="ml-6">
+                            <p class="font-medium">Escalated to Legal</p>
+                            <p class="text-sm text-gray-600">March 17, 2024</p>
+                          </div>
+                        </div>
+
+                        <div class="timeline-step current">
+                          <div class="ml-6">
+                            <p class="font-medium">Resolution in Progress</p>
+                            <p class="text-sm text-gray-600">
+                              Awaiting legal team decision
+                            </p>
+                          </div>
+                        </div>
+
+                        <div class="timeline-step">
+                          <div class="ml-6">
+                            <p class="font-medium">Case Closure</p>
+                            <p class="text-sm text-gray-600">
+                              Final resolution and follow-up
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Resolution Options -->
+                    <div>
+                      <h4 class="font-bold text-gray-900 mb-4">
+                        Resolution Type
+                      </h4>
+
+                      <div class="grid grid-cols-2 gap-4">
+                        <div
+                          class="template-card text-center p-4"
+                          onclick="selectResolution('action_taken')"
+                        >
+                          <i
+                            class="fas fa-gavel text-2xl text-blue-600 mb-2"
+                          ></i>
+                          <h5 class="font-bold">Action Taken</h5>
+                          <p class="text-sm text-gray-600 mt-1">
+                            Legal or platform action initiated
+                          </p>
+                        </div>
+
+                        <div
+                          class="template-card text-center p-4"
+                          onclick="selectResolution('resolved')"
+                        >
+                          <i
+                            class="fas fa-check-circle text-2xl text-green-600 mb-2"
+                          ></i>
+                          <h5 class="font-bold">Resolved</h5>
+                          <p class="text-sm text-gray-600 mt-1">
+                            Issue successfully addressed
+                          </p>
+                        </div>
+
+                        <div
+                          class="template-card text-center p-4"
+                          onclick="selectResolution('referred')"
+                        >
+                          <i
+                            class="fas fa-external-link-alt text-2xl text-purple-600 mb-2"
+                          ></i>
+                          <h5 class="font-bold">Referred</h5>
+                          <p class="text-sm text-gray-600 mt-1">
+                            Referred to external agency
+                          </p>
+                        </div>
+
+                        <div
+                          class="template-card text-center p-4"
+                          onclick="selectResolution('insufficient_evidence')"
+                        >
+                          <i
+                            class="fas fa-times-circle text-2xl text-red-600 mb-2"
+                          ></i>
+                          <h5 class="font-bold">Insufficient Evidence</h5>
+                          <p class="text-sm text-gray-600 mt-1">
+                            Unable to proceed
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Resolution Form -->
+                    <div>
+                      <h4 class="font-bold text-gray-900 mb-4">
+                        Resolution Details
+                      </h4>
+
+                      <div class="space-y-4">
+                        <div>
+                          <label class="block text-gray-700 mb-2 font-medium"
+                            >Resolution Summary</label
+                          >
+                          <textarea
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition min-h-[120px]"
+                            placeholder="Describe the outcome of the case..."
+                          >
+Legal team has initiated contact with Instagram for content removal and evidence preservation. Police report has been filed. Victim has been advised on safety measures.</textarea
+                          >
+                        </div>
+
+                        <div>
+                          <label class="block text-gray-700 mb-2 font-medium"
+                            >Follow-up Actions</label
+                          >
+                          <textarea
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition min-h-[80px]"
+                            placeholder="List any required follow-up actions..."
+                          >
+- Monitor for any further incidents
+- Follow up with Instagram in 7 days
+- Check in with victim in 48 hours</textarea
+                          >
+                        </div>
+
+                        <div class="flex justify-end">
+                          <button
+                            class="action-button primary"
+                            onclick="closeCase()"
+                          >
+                            <i class="fas fa-check-circle mr-2"></i>
+                            Mark as Resolved
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- History Tab -->
+                <div class="p-6 tab-content hidden" id="historyTab">
+                  <h3 class="text-lg font-bold text-gray-900 mb-6">
+                    Case History
+                  </h3>
+
+                  <div class="space-y-6">
+                    <!-- Activity Log -->
+                    <div class="space-y-4">
+                      <div class="flex items-start">
+                        <div class="bg-blue-100 p-2 rounded-lg mr-4">
+                          <i class="fas fa-flag text-blue-600"></i>
+                        </div>
+                        <div class="flex-grow">
+                          <h4 class="font-bold text-gray-900">
+                            Report Submitted
+                          </h4>
+                          <p class="text-sm text-gray-600">
+                            Initial report filed by victim
+                          </p>
+                          <p class="text-xs text-gray-500 mt-1">
+                            March 15, 2024 14:30
+                          </p>
+                        </div>
+                      </div>
+
+                      <div class="flex items-start">
+                        <div class="bg-yellow-100 p-2 rounded-lg mr-4">
+                          <i class="fas fa-eye text-yellow-600"></i>
+                        </div>
+                        <div class="flex-grow">
+                          <h4 class="font-bold text-gray-900">
+                            Evidence Reviewed
+                          </h4>
+                          <p class="text-sm text-gray-600">
+                            Initial evidence assessment completed
+                          </p>
+                          <p class="text-xs text-gray-500 mt-1">
+                            March 15, 2024 15:15
+                          </p>
+                        </div>
+                      </div>
+
+                      <div class="flex items-start">
+                        <div class="bg-red-100 p-2 rounded-lg mr-4">
+                          <i class="fas fa-level-up-alt text-red-600"></i>
+                        </div>
+                        <div class="flex-grow">
+                          <h4 class="font-bold text-gray-900">
+                            Case Escalated
+                          </h4>
+                          <p class="text-sm text-gray-600">
+                            Escalated to legal team due to threats
+                          </p>
+                          <p class="text-xs text-gray-500 mt-1">
+                            March 16, 2024 11:30
+                          </p>
+                        </div>
+                      </div>
+
+                      <div class="flex items-start">
+                        <div class="bg-green-100 p-2 rounded-lg mr-4">
+                          <i class="fas fa-paper-plane text-green-600"></i>
+                        </div>
+                        <div class="flex-grow">
+                          <h4 class="font-bold text-gray-900">Response Sent</h4>
+                          <p class="text-sm text-gray-600">
+                            Update provided to victim
+                          </p>
+                          <p class="text-xs text-gray-500 mt-1">
+                            March 17, 2024 10:15
+                          </p>
+                        </div>
+                      </div>
+
+                      <div class="flex items-start">
+                        <div class="bg-purple-100 p-2 rounded-lg mr-4">
+                          <i class="fas fa-gavel text-purple-600"></i>
+                        </div>
+                        <div class="flex-grow">
+                          <h4 class="font-bold text-gray-900">
+                            Legal Action Initiated
+                          </h4>
+                          <p class="text-sm text-gray-600">
+                            Contact made with platform for content removal
+                          </p>
+                          <p class="text-xs text-gray-500 mt-1">Today, 09:00</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Audit Trail -->
+                    <div>
+                      <h4 class="font-bold text-gray-900 mb-4">Audit Trail</h4>
+                      <div class="bg-gray-50 rounded-lg p-4">
+                        <div class="text-sm space-y-2">
+                          <div class="flex justify-between">
+                            <span>Last viewed by:</span>
+                            <span class="font-medium">Officer Jane Smith</span>
+                          </div>
+                          <div class="flex justify-between">
+                            <span>Last updated:</span>
+                            <span class="font-medium">Today, 10:30 AM</span>
+                          </div>
+                          <div class="flex justify-between">
+                            <span>Total views:</span>
+                            <span class="font-medium">8 times</span>
+                          </div>
+                          <div class="flex justify-between">
+                            <span>Case age:</span>
+                            <span class="font-medium">3 days</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Confirmation Modals -->
+    <div id="sendModal" class="modal-overlay">
+      <div class="modal-content">
+        <div class="p-6">
+          <div class="text-center mb-6">
+            <div
+              class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <i class="fas fa-paper-plane text-2xl text-blue-600"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">Send Response</h3>
+            <p class="text-gray-600">
+              Are you sure you want to send this response?
+            </p>
+          </div>
+
+          <div class="flex space-x-4">
+            <button
+              class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-3 px-4 rounded-lg transition"
+              onclick="closeModal('sendModal')"
+            >
+              Cancel
+            </button>
+            <button
+              class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition"
+              onclick="confirmSend()"
+            >
+              Send Response
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="escalationModal" class="modal-overlay">
+      <div class="modal-content">
+        <div class="p-6">
+          <div class="text-center mb-6">
+            <div
+              class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <i class="fas fa-exclamation-triangle text-2xl text-red-600"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">
+              Confirm Escalation
+            </h3>
+            <p class="text-gray-600">
+              This will escalate the case to the legal team. This action cannot
+              be undone.
+            </p>
+          </div>
+
+          <div class="flex space-x-4">
+            <button
+              class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-3 px-4 rounded-lg transition"
+              onclick="closeModal('escalationModal')"
+            >
+              Cancel
+            </button>
+            <button
+              class="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-4 rounded-lg transition"
+              onclick="confirmEscalationAction()"
+            >
+              Confirm Escalation
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="resolutionModal" class="modal-overlay">
+      <div class="modal-content">
+        <div class="p-6">
+          <div class="text-center mb-6">
+            <div
+              class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <i class="fas fa-check-circle text-2xl text-green-600"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">Close Case</h3>
+            <p class="text-gray-600">
+              Are you sure you want to mark this case as resolved?
+            </p>
+          </div>
+
+          <div class="flex space-x-4">
+            <button
+              class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-3 px-4 rounded-lg transition"
+              onclick="closeModal('resolutionModal')"
+            >
+              Cancel
+            </button>
+            <button
+              class="flex-1 bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-4 rounded-lg transition"
+              onclick="confirmResolution()"
+            >
+              Mark as Resolved
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Tab Navigation
+        const tabs = document.querySelectorAll(".response-tab");
+        const tabContents = document.querySelectorAll(".tab-content");
+
+        tabs.forEach((tab) => {
+          tab.addEventListener("click", function () {
+            const tabId = this.dataset.tab;
+
+            // Update active tab
+            tabs.forEach((t) => t.classList.remove("active"));
+            this.classList.add("active");
+
+            // Show corresponding content
+            tabContents.forEach((content) => {
+              content.classList.add("hidden");
+            });
+
+            document.getElementById(`${tabId}Tab`).classList.remove("hidden");
+          });
+        });
+
+        // Template selection
+        window.selectTemplate = function (templateId) {
+          const templates = document.querySelectorAll(".template-card");
+          templates.forEach((template) =>
+            template.classList.remove("selected")
+          );
+
+          const selectedTemplate = document.querySelector(
+            `.template-card:nth-child(${templateId})`
+          );
+          selectedTemplate.classList.add("selected");
+
+          // In a real app, this would populate the message textarea
+          const messages = [
+            "Thank you for submitting your report. We have received it and our team is currently reviewing the evidence. We'll get back to you within 24-48 hours with an update.",
+            "To help us proceed with your case, we need some additional evidence. Could you please provide screenshots of any further incidents and a timeline of events?",
+            "We've made progress on your case. Our team has reviewed the evidence and we're currently determining the appropriate course of action.",
+            "Your case has been escalated to our legal team for further review. They will contact you if additional information is needed.",
+            "We've completed our investigation. The appropriate actions have been taken and we consider this case resolved. Please contact us if you have any further concerns.",
+          ];
+
+          document.getElementById("responseMessage").value =
+            messages[templateId - 1];
+        };
+
+        // Escalation selection
+        window.selectEscalation = function (level) {
+          const escalationLevels =
+            document.querySelectorAll(".escalation-level");
+          escalationLevels.forEach((level) => {
+            level
+              .querySelector("i")
+              .classList.remove("fa-check", "fa-arrow-right");
+            level.querySelector("i").classList.add("fa-arrow-right");
+          });
+
+          const selected = document.querySelector(`.escalation-level.${level}`);
+          selected.querySelector("i").classList.remove("fa-arrow-right");
+          selected.querySelector("i").classList.add("fa-check");
+        };
+
+        // Resolution selection
+        window.selectResolution = function (type) {
+          const resolutionOptions = document.querySelectorAll(".template-card");
+          resolutionOptions.forEach((option) =>
+            option.classList.remove("selected")
+          );
+
+          // In a real app, this would update the resolution form
+          console.log(`Selected resolution type: ${type}`);
+        };
+
+        // Modal functions
+        window.sendResponse = function () {
+          document.getElementById("sendModal").classList.add("show");
+        };
+
+        window.confirmEscalation = function () {
+          document.getElementById("escalationModal").classList.add("show");
+        };
+
+        window.closeCase = function () {
+          document.getElementById("resolutionModal").classList.add("show");
+        };
+
+        window.closeModal = function (modalId) {
+          document.getElementById(modalId).classList.remove("show");
+        };
+
+        // Confirmation actions
+        window.confirmSend = function () {
+          const message = document.getElementById("responseMessage").value;
+
+          // In a real app, this would send to API
+          console.log("Sending response:", message);
+
+          // Add to conversation thread
+          const conversation = document.querySelector(
+            ".space-y-4.max-h-\\[400px\\]"
+          );
+          const newMessage = document.createElement("div");
+          newMessage.className = "message-bubble admin";
+          newMessage.innerHTML = `
+                    <p>${message}</p>
+                    <div class="message-time">Just now</div>
+                `;
+          conversation.appendChild(newMessage);
+
+          // Clear and close
+          document.getElementById("responseMessage").value = "";
+          closeModal("sendModal");
+
+          // Show success message
+          alert("Response sent successfully!");
+        };
+
+        window.confirmEscalationAction = function () {
+          // In a real app, this would call API
+          console.log("Case escalated to legal team");
+
+          closeModal("escalationModal");
+          alert("Case has been escalated to the legal team.");
+
+          // Update UI
+          document.querySelector(".status-badge").textContent = "Escalated";
+          document.querySelector(".status-badge").className =
+            "status-badge status-action";
+        };
+
+        window.confirmResolution = function () {
+          // In a real app, this would call API
+          console.log("Case marked as resolved");
+
+          closeModal("resolutionModal");
+          alert("Case has been marked as resolved.");
+
+          // Update UI
+          document.querySelector(".status-badge").textContent = "Resolved";
+          document.querySelector(".status-badge").className =
+            "status-badge status-resolved";
+        };
+
+        // Initialize
+        selectTemplate(1);
+        selectEscalation("high");
+      });
+    </script>
+  </body>
+</html>
