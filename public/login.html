@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Login - SafeNet Shield</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
+  <body
+    class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen flex items-center justify-center"
+  >
+    <!-- Login Container -->
+    <div class="w-full max-w-md px-4">
+      <!-- Logo and Title -->
+      <div class="text-center mb-8">
+        <div
+          class="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-full mb-4"
+        >
+          <i class="fas fa-shield-alt text-white text-2xl"></i>
+        </div>
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">SafeNet Shield</h1>
+        <p class="text-gray-600">Admin Portal Login</p>
+      </div>
+
+      <!-- Login Card -->
+      <div class="bg-white rounded-lg shadow-xl p-8">
+        <!-- Alert Messages -->
+        <div id="alert-container" class="mb-4"></div>
+
+        <!-- Login Form -->
+        <form id="login-form" class="space-y-6">
+          <div>
+            <label
+              for="email"
+              class="block text-sm font-medium text-gray-700 mb-2"
+            >
+              <i class="fas fa-envelope mr-2 text-gray-400"></i>Email Address
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              required
+              class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="admin@safenetshield.org"
+            />
+          </div>
+
+          <div>
+            <label
+              for="password"
+              class="block text-sm font-medium text-gray-700 mb-2"
+            >
+              <i class="fas fa-lock mr-2 text-gray-400"></i>Password
+            </label>
+            <div class="relative">
+              <input
+                type="password"
+                id="password"
+                name="password"
+                required
+                class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Enter your password"
+              />
+              <button
+                type="button"
+                id="toggle-password"
+                class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              >
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <label class="flex items-center">
+              <input
+                type="checkbox"
+                id="remember"
+                class="form-checkbox h-4 w-4 text-blue-600 rounded"
+              />
+              <span class="ml-2 text-sm text-gray-600">Remember me</span>
+            </label>
+            <a href="#" class="text-sm text-blue-600 hover:text-blue-800"
+              >Forgot password?</a
+            >
+          </div>
+
+          <button
+            type="submit"
+            id="login-btn"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-300 flex items-center justify-center"
+          >
+            <i class="fas fa-sign-in-alt mr-2"></i>
+            <span>Sign In</span>
+          </button>
+        </form>
+
+        <!-- Demo Credentials -->
+        <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <p class="text-sm font-semibold text-blue-800 mb-2">
+            <i class="fas fa-info-circle mr-2"></i>Demo Credentials
+          </p>
+          <p class="text-xs text-blue-700">
+            Email: <span class="font-mono">admin@safenetshield.org</span><br />
+            Password: <span class="font-mono">SafeNet2024!</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Back to Home -->
+      <div class="text-center mt-6">
+        <a href="/" class="text-gray-600 hover:text-gray-800 text-sm">
+          <i class="fas fa-arrow-left mr-2"></i>Back to Home
+        </a>
+      </div>
+    </div>
+
+    <script src="./js/main.js"></script>
+    <script>
+      // Toggle password visibility
+      document
+        .getElementById("toggle-password")
+        .addEventListener("click", function () {
+          const passwordInput = document.getElementById("password");
+          const icon = this.querySelector("i");
+
+          if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            icon.classList.remove("fa-eye");
+            icon.classList.add("fa-eye-slash");
+          } else {
+            passwordInput.type = "password";
+            icon.classList.remove("fa-eye-slash");
+            icon.classList.add("fa-eye");
+          }
+        });
+
+      // Handle login form submission
+      document
+        .getElementById("login-form")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const email = document.getElementById("email").value;
+          const password = document.getElementById("password").value;
+          const remember = document.getElementById("remember").checked;
+          const loginBtn = document.getElementById("login-btn");
+
+          // Disable button and show loading
+          loginBtn.disabled = true;
+          loginBtn.innerHTML =
+            '<i class="fas fa-spinner fa-spin mr-2"></i>Signing in...';
+
+          try {
+            const response = await fetch("/api/auth/login", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ email, password }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+              // Store token and user info
+              localStorage.setItem("adminToken", data.token);
+              localStorage.setItem("adminName", data.user.name);
+              localStorage.setItem("adminEmail", data.user.email);
+              localStorage.setItem("adminRole", data.user.role);
+
+              if (remember) {
+                localStorage.setItem("rememberAdmin", "true");
+              }
+
+              // Show success message
+              showAlert("success", "Login successful! Redirecting...");
+
+              // Redirect to dashboard
+              setTimeout(() => {
+                window.location.href = "/dashboard";
+              }, 1000);
+            } else {
+              showAlert("error", data.message || "Invalid email or password");
+              loginBtn.disabled = false;
+              loginBtn.innerHTML =
+                '<i class="fas fa-sign-in-alt mr-2"></i>Sign In';
+            }
+          } catch (error) {
+            console.error("Login error:", error);
+            showAlert("error", "An error occurred. Please try again.");
+            loginBtn.disabled = false;
+            loginBtn.innerHTML =
+              '<i class="fas fa-sign-in-alt mr-2"></i>Sign In';
+          }
+        });
+
+      // Show alert message
+      function showAlert(type, message) {
+        const alertContainer = document.getElementById("alert-container");
+        const alertClass = type === "success" ? "alert-success" : "alert-error";
+
+        alertContainer.innerHTML = `
+                <div class="alert ${alertClass}">
+                    <div class="flex items-center justify-between">
+                        <span>${message}</span>
+                        <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-lg">&times;</button>
+                    </div>
+                </div>
+            `;
+
+        // Auto-remove after 5 seconds
+        setTimeout(() => {
+          alertContainer.innerHTML = "";
+        }, 5000);
+      }
+
+      // Check if already logged in
+      window.addEventListener("DOMContentLoaded", function () {
+        const token = localStorage.getItem("adminToken");
+        if (token) {
+          // Verify token is still valid
+          fetch("/api/auth/verify", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+            .then((response) => {
+              if (response.ok) {
+                window.location.href = "/dashboard";
+              }
+            })
+            .catch((error) => {
+              console.error("Token verification error:", error);
+            });
+        }
+      });
+    </script>
+  </body>
+</html>

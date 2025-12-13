@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Report Submitted - SafeNet Shield</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body class="bg-gradient-to-br from-green-50 to-blue-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+          <div class="flex items-center">
+            <a href="/" class="flex items-center">
+              <i class="fas fa-shield-alt text-2xl text-blue-600"></i>
+              <span class="ml-2 text-xl font-bold text-gray-800"
+                >SafeNet Shield</span
+              >
+            </a>
+          </div>
+          <div class="hidden md:block">
+            <div class="ml-10 flex items-baseline space-x-4">
+              <a
+                href="/"
+                class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium"
+                >Home</a
+              >
+              <a
+                href="/report"
+                class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium"
+                >Report Incident</a
+              >
+              <a
+                href="/learn"
+                class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium"
+                >Learn Safety</a
+              >
+              <a
+                href="/support"
+                class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium"
+                >Get Support</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Success Content -->
+    <div class="max-w-4xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
+      <!-- Success Message -->
+      <div class="text-center mb-12">
+        <div
+          class="bg-green-100 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6"
+        >
+          <i class="fas fa-check text-4xl text-green-600"></i>
+        </div>
+        <h1 class="text-4xl font-bold text-gray-800 mb-4">
+          Report Successfully Submitted
+        </h1>
+        <p class="text-xl text-gray-600 mb-6">
+          Thank you for taking the brave step to report this incident. Your
+          safety and well-being matter.
+        </p>
+      </div>
+
+      <!-- Case Information -->
+      <div class="card mb-8">
+        <div class="text-center">
+          <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+            Your Case Information
+          </h2>
+          <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+            <div class="text-sm text-blue-600 mb-2">Case ID</div>
+            <div id="case-id" class="text-3xl font-bold text-blue-800 mb-4">
+              Loading...
+            </div>
+            <div class="text-sm text-blue-600">
+              <i class="fas fa-info-circle mr-1"></i>
+              Save this Case ID to check your report status
+            </div>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-4 text-sm">
+            <div class="bg-gray-50 p-4 rounded-lg">
+              <div class="text-gray-600 mb-1">Submitted</div>
+              <div id="submission-time" class="font-semibold text-gray-800">
+                Just now
+              </div>
+            </div>
+            <div class="bg-gray-50 p-4 rounded-lg">
+              <div class="text-gray-600 mb-1">Status</div>
+              <div class="font-semibold text-yellow-600">
+                <i class="fas fa-clock mr-1"></i>Under Review
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- What Happens Next -->
+      <div class="card mb-8">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-6">
+          What Happens Next?
+        </h2>
+        <div class="space-y-6">
+          <div class="flex items-start">
+            <div
+              class="bg-blue-100 w-8 h-8 rounded-full flex items-center justify-center mr-4 mt-1"
+            >
+              <span class="text-blue-600 font-bold text-sm">1</span>
+            </div>
+            <div>
+              <h3 class="font-semibold text-gray-800 mb-2">
+                Initial Review (24-48 hours)
+              </h3>
+              <p class="text-gray-600 text-sm">
+                Our trained staff will review your report and assess the
+                situation. Emergency cases are prioritized and reviewed
+                immediately.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-start">
+            <div
+              class="bg-green-100 w-8 h-8 rounded-full flex items-center justify-center mr-4 mt-1"
+            >
+              <span class="text-green-600 font-bold text-sm">2</span>
+            </div>
+            <div>
+              <h3 class="font-semibold text-gray-800 mb-2">
+                Investigation & Support
+              </h3>
+              <p class="text-gray-600 text-sm">
+                We'll connect you with appropriate resources and support
+                services. If you provided contact information, we may reach out
+                for additional details.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-start">
+            <div
+              class="bg-purple-100 w-8 h-8 rounded-full flex items-center justify-center mr-4 mt-1"
+            >
+              <span class="text-purple-600 font-bold text-sm">3</span>
+            </div>
+            <div>
+              <h3 class="font-semibold text-gray-800 mb-2">
+                Resolution & Follow-up
+              </h3>
+              <p class="text-gray-600 text-sm">
+                We'll work to address the situation and provide ongoing support
+                as needed. You can check your case status anytime using your
+                Case ID.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Important Information -->
+      <div class="grid md:grid-cols-2 gap-6 mb-8">
+        <!-- Safety Reminder -->
+        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+          <div class="flex items-start">
+            <i
+              class="fas fa-exclamation-triangle text-yellow-600 text-xl mr-3 mt-1"
+            ></i>
+            <div>
+              <h3 class="font-semibold text-yellow-800 mb-2">Stay Safe</h3>
+              <p class="text-yellow-700 text-sm mb-3">
+                If you're in immediate danger or the situation escalates, don't
+                wait for our response.
+              </p>
+              <div class="space-y-1 text-sm">
+                <div>
+                  <strong>Emergency:</strong>
+                  <a href="tel:911" class="text-yellow-800 underline"
+                    >Call 911</a
+                  >
+                </div>
+                <div>
+                  <strong>Crisis Support:</strong>
+                  <a href="tel:988" class="text-yellow-800 underline"
+                    >Call 988</a
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Privacy Assurance -->
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+          <div class="flex items-start">
+            <i class="fas fa-lock text-blue-600 text-xl mr-3 mt-1"></i>
+            <div>
+              <h3 class="font-semibold text-blue-800 mb-2">
+                Your Privacy is Protected
+              </h3>
+              <p class="text-blue-700 text-sm mb-3">
+                Your report is encrypted and stored securely. Only authorized
+                personnel can access it.
+              </p>
+              <ul class="text-sm text-blue-600 space-y-1">
+                <li><i class="fas fa-check mr-1"></i>End-to-end encryption</li>
+                <li>
+                  <i class="fas fa-check mr-1"></i>Limited access controls
+                </li>
+                <li>
+                  <i class="fas fa-check mr-1"></i>No data sharing without
+                  consent
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="text-center space-y-4">
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <button
+            onclick="checkStatus()"
+            class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition duration-300"
+          >
+            <i class="fas fa-search mr-2"></i>
+            Check Report Status
+          </button>
+          <a
+            href="/support"
+            class="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-lg font-semibold transition duration-300 inline-block"
+          >
+            <i class="fas fa-hands-helping mr-2"></i>
+            Get Additional Support
+          </a>
+          <a
+            href="/learn"
+            class="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-semibold transition duration-300 inline-block"
+          >
+            <i class="fas fa-graduation-cap mr-2"></i>
+            Learn Digital Safety
+          </a>
+        </div>
+
+        <div class="pt-4">
+          <a href="/" class="text-gray-600 hover:text-gray-800 text-sm">
+            <i class="fas fa-arrow-left mr-1"></i>
+            Return to Home
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Status Check Modal -->
+    <div id="status-modal" class="modal-overlay hidden">
+      <div class="modal-content">
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="text-xl font-bold text-gray-800">Check Report Status</h3>
+          <button
+            onclick="closeStatusModal()"
+            class="text-gray-500 hover:text-gray-700"
+          >
+            <i class="fas fa-times text-xl"></i>
+          </button>
+        </div>
+
+        <form id="status-form" class="space-y-4">
+          <div>
+            <label
+              for="status-case-id"
+              class="block text-sm font-medium text-gray-700 mb-2"
+            >
+              Case ID <span class="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              id="status-case-id"
+              name="caseId"
+              required
+              class="form-input"
+              placeholder="Enter your Case ID"
+            />
+          </div>
+
+          <div class="text-center">
+            <button type="submit" class="btn-primary">
+              <i class="fas fa-search mr-2"></i>
+              Check Status
+            </button>
+          </div>
+        </form>
+
+        <div id="status-result" class="mt-6 hidden">
+          <!-- Status result will be displayed here -->
+        </div>
+      </div>
+    </div>
+
+    <script src="/js/main.js"></script>
+    <script>
+      // Get case ID from URL parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      const caseId = urlParams.get("caseId");
+
+      if (caseId) {
+        document.getElementById("case-id").textContent = caseId;
+        document.getElementById("status-case-id").value = caseId;
+      } else {
+        document.getElementById("case-id").textContent = "Not available";
+      }
+
+      // Set submission time
+      document.getElementById("submission-time").textContent =
+        new Date().toLocaleString();
+
+      // Check status function
+      function checkStatus() {
+        document.getElementById("status-modal").classList.remove("hidden");
+      }
+
+      // Close status modal
+      function closeStatusModal() {
+        document.getElementById("status-modal").classList.add("hidden");
+      }
+
+      // Handle status form submission
+      document
+        .getElementById("status-form")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const formData = new FormData(this);
+          const caseId = formData.get("caseId");
+
+          try {
+            const response = await fetch(`/api/reports/status/${caseId}`);
+            const data = await response.json();
+
+            const resultDiv = document.getElementById("status-result");
+
+            if (data.success) {
+              const report = data.report;
+              resultDiv.innerHTML = `
+                        <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                            <h4 class="font-semibold text-green-800 mb-3">Report Status: ${
+                              report.caseId
+                            }</h4>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Status:</span>
+                                    <span class="badge status-${
+                                      report.status
+                                    }">${report.status}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Submitted:</span>
+                                    <span class="text-gray-800">${new Date(
+                                      report.submittedAt
+                                    ).toLocaleDateString()}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Last Updated:</span>
+                                    <span class="text-gray-800">${new Date(
+                                      report.lastUpdated
+                                    ).toLocaleDateString()}</span>
+                                </div>
+                            </div>
+                            ${
+                              report.publicNotes &&
+                              report.publicNotes.length > 0
+                                ? `
+                                <div class="mt-4">
+                                    <h5 class="font-semibold text-green-800 mb-2">Updates:</h5>
+                                    <div class="space-y-2">
+                                        ${report.publicNotes
+                                          .map(
+                                            (note) => `
+                                            <div class="bg-white p-3 rounded border">
+                                                <p class="text-sm text-gray-700">${
+                                                  note.note
+                                                }</p>
+                                                <p class="text-xs text-gray-500 mt-1">${new Date(
+                                                  note.addedAt
+                                                ).toLocaleDateString()}</p>
+                                            </div>
+                                        `
+                                          )
+                                          .join("")}
+                                    </div>
+                                </div>
+                            `
+                                : ""
+                            }
+                        </div>
+                    `;
+            } else {
+              resultDiv.innerHTML = `
+                        <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                            <p class="text-red-700">Report not found. Please check your Case ID and try again.</p>
+                        </div>
+                    `;
+            }
+
+            resultDiv.classList.remove("hidden");
+          } catch (error) {
+            console.error("Status check error:", error);
+            const resultDiv = document.getElementById("status-result");
+            resultDiv.innerHTML = `
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                        <p class="text-red-700">Error checking status. Please try again later.</p>
+                    </div>
+                `;
+            resultDiv.classList.remove("hidden");
+          }
+        });
+
+      // Close modal on escape key
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") {
+          closeStatusModal();
+        }
+      });
+    </script>
+  </body>
+</html>
