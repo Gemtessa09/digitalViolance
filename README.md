@@ -15,15 +15,15 @@ With the rapid growth of internet access and social media platforms, women and c
 
 In many developing regions, including vulnerable communities, these challenges are intensified by:
 
-Limited digital literacy
+-Limited digital literacy
 
-Fear of retaliation
+-Fear of retaliation
 
-Lack of confidential reporting mechanisms
+-Lack of confidential reporting mechanisms
 
-Inadequate access to legal and psychological support
+-Inadequate access to legal and psychological support
 
-Weak enforcement of digital safety policies
+-Weak enforcement of digital safety policies
 
 SafeNet Shield was conceived to respond to these challenges by providing a secure, trusted, and easy-to-use digital protection platform.
 
@@ -48,81 +48,80 @@ Victims often lose or fail to preserve digital evidence required for legal actio
 
 # 4. Problem Addressed by SafeNet Shield
 
-SafeNet Shield directly addresses the above challenges by:
+-SafeNet Shield directly addresses the above challenges by:
 
-Providing a secure and anonymous reporting system
+-Providing a secure and anonymous reporting system
 
-Offering digital safety education tailored for women and children
+-Offering digital safety education tailored for women and children
 
-Enabling safe storage of evidence for future reference
+-Enabling safe storage of evidence for future reference
 
-Connecting users with support services and emergency contacts
+-Connecting users with support services and emergency contacts
 
-Ensuring privacy, confidentiality, and data protection
+-Ensuring privacy, confidentiality, and data protection
 
 # 5. Project Objectives
-General Objective
+# General Objective
 
-To reduce the impact of Technology-Facilitated Gender-Based Violence by empowering women and children with digital tools for protection, reporting, and awareness.
+-To reduce the impact of Technology-Facilitated Gender-Based Violence by empowering women and children with digital tools for protection, reporting, and awareness.
 
 Specific Objectives
 
-To create a secure platform for reporting TFGBV incidents.
+-To create a secure platform for reporting TFGBV incidents.
 
-To educate users about online safety and digital rights.
+-To educate users about online safety and digital rights.
 
-To provide access to real-time support and emergency services.
+-To provide access to real-time support and emergency services.
 
-To ensure confidentiality and data security for all users.
+-To ensure confidentiality and data security for all users.
 
-To support documentation and tracking of reported cases.
+-To support documentation and tracking of reported cases.
 
 # 6. Scope of the Project
-Included
+# Included
 
-Web-based application
+0Web-based application
 
-Anonymous and authenticated user reporting
+0Anonymous and authenticated user reporting
 
-Digital safety learning modules
+-Digital safety learning modules
 
-Admin dashboard for case management
+-Admin dashboard for case management
 
-Secure backend with MongoDB database
+-Secure backend with MongoDB database
 
-Excluded
+# Excluded
 
-Physical intervention
+-Physical intervention
 
-Direct legal enforcement
+-Direct legal enforcement
 
-Mobile application (future scope)
+-Mobile application (future scope)
 
 # 7. System Architecture
-Frontend
+# Frontend
 
-HTML5
+-HTML5
 
-CSS3
-
-JavaScript (Vanilla JS)
+-CSS3
+-Tailwind css
+-JavaScript (Vanilla JS)
 
 Backend
 
-Node.js
+-Node.js
 
-Express.js
+-Express.js
 
-Database
+-Database-MongoDB
 
-MongoDB
 
-Architecture Overview
-User Interface (HTML/CSS/JS)
+# Architecture Overview
+-User Interface (HTML/CSS/JS)
         ↓
-Express.js API (Node.js)
+-Express.js API (Node.js)
         ↓
-MongoDB Database
+-MongoDB Database
 
 # 8. Key Features of the System
 1. TFGBV Reporting System
@@ -183,27 +182,27 @@ System administrators
 
 # 10. Expected Outcomes
 
-Increased reporting of TFGBV incidents
+-Increased reporting of TFGBV incidents
 
-Improved digital safety awareness
+-Improved digital safety awareness
 
 Faster access to support services
 
-Better documentation of abuse cases
+-Better documentation of abuse cases
 
-Empowered women and children in digital spaces
+-Empowered women and children in digital spaces
 
 # 11. Feasibility and Sustainability
 
 The project is technically feasible using open-source technologies. It can be scaled to include:
 
-AI-based abuse detection
+-AI-based abuse detection
 
-Mobile application
+-Mobile application
 
-Multilingual support
+-Multilingual support
 
-Integration with government or NGO systems
+-Integration with government or NGO systems
 
 # 12. Conclusion
 
