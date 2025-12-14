@@ -80,9 +80,9 @@ Specific Objectives
 # 6. Scope of the Project
 # Included
 
-0Web-based application
+-Web-based application
 
-0Anonymous and authenticated user reporting
+-Anonymous and authenticated user reporting
 
 -Digital safety learning modules
 
